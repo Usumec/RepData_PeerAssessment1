@@ -45,8 +45,11 @@ df.date <- activity %>%
         group_by(date) %>%
         summarise_all(~sum(., na.rm = T))
 
-ggplot(data = df.date, aes(x = date, y = steps)) +
-        geom_bar(stat = "identity")
+qplot(steps, data=df.date)
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
 ![](PA1_template_files/figure-html/total_steps-1.png)<!-- -->
@@ -102,13 +105,14 @@ sum(is.na(activity$steps))
 ## [1] 2304
 ```
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
- - We will use the interval mean calculated earlier anbd stored in `df.int`.
+ - We will use the interval mean calculated earlier and stored in `df.int`.
  
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ```r
 act_imputed <- activity
 to_sub <- which(is.na(activity$steps))
+#replace each NA with its corresponding interval average
 for (i in to_sub) {
         act_imputed$steps[i] <- df.int$steps[which(df.int$interval == act_imputed$interval[i])]
 }
@@ -123,8 +127,11 @@ df.imput <- act_imputed %>%
         group_by(date) %>%
         summarise_all(~sum(., na.rm = T))
 
-ggplot(data = df.imput, aes(x = date, y = steps)) +
-        geom_bar(stat = "identity")
+qplot(steps, data=df.imput)
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
@@ -138,7 +145,7 @@ summary(df.imput$steps)[c(3,4)]
 ## 10766.19 10766.19
 ```
 
-Now the days with no data have been filled. Mean and median have both increased and are equal to 10766.19
+Mean and median have both increased and are equal to 10766.19
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
